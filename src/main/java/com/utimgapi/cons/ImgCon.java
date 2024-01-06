@@ -6,6 +6,7 @@ import org.springframework.core.io.Resource;
 
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -21,9 +22,6 @@ public class ImgCon {
     @Value("${ytimg.directory}")
     private String imageUploadDirectory;
 
-    @Value("${IMG_KEY}")
-    private String imgkey;
-
     // 이미지 한개 보여주기
     @GetMapping("/{serviceName}/{imageName}")
     @ResponseBody
@@ -31,7 +29,6 @@ public class ImgCon {
 
         Path imagePath = Paths.get(imageUploadDirectory +"/" +serviceName +"/" + imageName);
         System.out.println(imageUploadDirectory +"/" +serviceName +"/" + imageName);
-        System.out.println("imgkey:"+imgkey);
 
         Resource resource = new UrlResource(imagePath.toUri());
 
@@ -46,20 +43,25 @@ public class ImgCon {
 
     }
 
-    @RestController
-    public class FileReceiveController {
+    @PostMapping("/upload")
+    public ResponseEntity<String> receiveFile(
+            @RequestPart("file") MultipartFile file,
+            @RequestPart("service") String service,
+            @RequestPart("key") String imgkey) throws IOException {
+        String uploadDirectory = System.getProperty("user.dir") + "/images/" + service; // 파일을 저장할 위치
+        File storeFile = new File(uploadDirectory + "/" + file.getOriginalFilename());
 
-        @PostMapping("/upload")
-        public ResponseEntity<String> receiveFile(@RequestParam("file") MultipartFile file, @RequestParam("title") String title) throws IOException {
-            String uploadDirectory = System.getProperty("user.dir") + "/images"; // 파일을 저장할 위치
-            File storeFile = new File(uploadDirectory + "/" + file.getOriginalFilename());
+        System.out.println(service + imgkey);
 
-            // 파일 저장
-            file.transferTo(storeFile);
+        // 파일 저장
+        file.transferTo(storeFile);
 
-            return ResponseEntity.ok("File received.");
-        }
+        return ResponseEntity.ok("File received.");
     }
+
+
+
+
 
 
 
