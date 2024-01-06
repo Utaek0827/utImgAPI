@@ -1,0 +1,25 @@
+# application.properties
+ytimg:
+  directory: images
+
+server :
+  port : 8081
+
+spring :
+  datasource :
+    driver-class-name: org.mariadb.jdbc.Driver
+    url : jdbc:mariadb://${DB_HOST:localhost}:${DB_PORT:3306}/ytimg_db?allowMultiQueries=true
+    username : ${DB_USERNAME:root}
+    password : ${DB_PASSWORD:password}
+  servlet:
+    multipart:
+      max-file-size: 50MB
+      max-request-size: 50MB
+  mvc:
+    async:
+      request-timeout: 5000
+
+
+#mybatis :
+#  type-aliases-package: com.ut.api_proj
+#  mapper-locations: classpath:mapper/*.xml
