@@ -52,6 +52,7 @@ public class ImgCon {
         File storeFile = new File(uploadDirectory + "/" + file.getOriginalFilename());
 
         System.out.println(service + imgkey);
+        System.out.println("Asdkfnsladf");
 
         // 파일 저장
         file.transferTo(storeFile);
