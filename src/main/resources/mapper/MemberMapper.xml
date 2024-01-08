@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org/DTD Mapper3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+
+<mapper namespace="com.utimgapi.mapper.MemberMapper">
+
+    <select id="member_list" resultType="Member">
+        SELECT * FROM yt_img_member
+    </select>
+
+    <select id="getMember" resultType="Member" parameterType="String">
+        SELECT * FROM yt_img_member
+        WHERE `m_key` = #{key}
+    </select>
+
+
+
+
+
+</mapper>

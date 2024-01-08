@@ -1,12 +1,13 @@
 package com.utimgapi.cons;
 
+import com.utimgapi.mapper.MemberMapper;
+import com.utimgapi.service.MemberService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.UrlResource;
 import org.springframework.core.io.Resource;
 
-import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
-import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -22,6 +23,13 @@ public class ImgCon {
     @Value("${ytimg.directory}")
     private String imageUploadDirectory;
 
+    MemberService memberService;
+
+    @Autowired
+    public ImgCon(MemberService memberService) {
+        this.memberService = memberService;
+    }
+
     // 이미지 한개 보여주기
     @GetMapping("/{serviceName}/{imageName}")
     @ResponseBody
@@ -29,6 +37,8 @@ public class ImgCon {
 
         Path imagePath = Paths.get(imageUploadDirectory +"/" +serviceName +"/" + imageName);
         System.out.println(imageUploadDirectory +"/" +serviceName +"/" + imageName);
+        System.out.println(memberService.toString());
+        System.out.println(memberService.memberList());
 
         Resource resource = new UrlResource(imagePath.toUri());
 
@@ -47,17 +57,15 @@ public class ImgCon {
     public ResponseEntity<String> receiveFile(
             @RequestPart("file") MultipartFile file,
             @RequestPart("service") String service,
+            @RequestPart("memberId") String memberId,
             @RequestPart("key") String imgkey) throws IOException {
-        String uploadDirectory = System.getProperty("user.dir") + "/images/" + service; // 파일을 저장할 위치
-        File storeFile = new File(uploadDirectory + "/" + file.getOriginalFilename());
 
-        System.out.println(service + imgkey);
-        System.out.println("Asdkfnsladf");
 
-        // 파일 저장
-        file.transferTo(storeFile);
-
-        return ResponseEntity.ok("File received.");
+        if(memberService.getMemberByKey(imgkey, file, service, memberId) == null){
+            return ResponseEntity.ok("유효하지 않은 키");
+        }else{
+            return ResponseEntity.ok("File received.");
+        }
     }
 
 
