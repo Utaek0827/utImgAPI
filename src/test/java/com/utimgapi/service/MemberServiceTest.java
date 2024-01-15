@@ -23,7 +23,6 @@ class MemberServiceTest {
         MultipartFile file = mock(MultipartFile.class);
 
         // MemberService에 Mock 객체 주입
-        MemberService memberService = new MemberService(memberMapper);
 
         // Mocking: getMember 메서드 호출 시 가짜 Member 객체 반환하도록 설정
         when(memberMapper.getMember("testKey4")).thenReturn(new Member());

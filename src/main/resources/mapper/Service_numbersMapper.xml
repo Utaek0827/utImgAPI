@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org/DTD Mapper3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+
+<mapper namespace="com.utimgapi.mapper.Service_numbersMapper">
+
+
+    <select id="getService_number" resultType="Service_numbers" parameterType="map">
+        SELECT * FROM service_numbers
+        WHERE `m_id` = #{m_id}  AND `m_service` = #{m_service}
+    </select>
+
+
+
+
+
+</mapper>

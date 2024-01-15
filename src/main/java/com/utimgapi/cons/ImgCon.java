@@ -31,12 +31,16 @@ public class ImgCon {
     }
 
     // 이미지 한개 보여주기
-    @GetMapping("/{serviceName}/{imageName}")
-    @ResponseBody
-    public ResponseEntity wewtImg(@PathVariable String serviceName, @PathVariable String imageName) throws MalformedURLException {
+    // 이미지 중복이름 불러오는 방법
 
-        Path imagePath = Paths.get(imageUploadDirectory +"/" +serviceName +"/" + imageName);
-        System.out.println(imageUploadDirectory +"/" +serviceName +"/" + imageName);
+    @GetMapping("/{serviceNumber}/{imageName}")
+    @ResponseBody
+    public ResponseEntity wewtImg(@PathVariable String serviceNumber, @PathVariable String imageName) throws MalformedURLException {
+
+         memberService.getImgUNameByoriName(imageName);
+
+        Path imagePath = Paths.get(imageUploadDirectory +"/" +serviceNumber +"/" + imageName);
+        System.out.println(imageUploadDirectory +"/" +serviceNumber +"/" + imageName);
         System.out.println(memberService.toString());
         System.out.println(memberService.memberList());
 
@@ -54,18 +58,15 @@ public class ImgCon {
     }
 
     @PostMapping("/upload")
-    public ResponseEntity<String> receiveFile(
+    public ResponseEntity<String> receiveFile( //이미지 저장용 컨트롤러
             @RequestPart("file") MultipartFile file,
             @RequestPart("service") String service,
             @RequestPart("memberId") String memberId,
             @RequestPart("key") String imgkey) throws IOException {
 
+        String msg = memberService.getMemberByKey(imgkey, file, service, memberId);
+        return ResponseEntity.ok(msg);
 
-        if(memberService.getMemberByKey(imgkey, file, service, memberId) == null){
-            return ResponseEntity.ok("유효하지 않은 키");
-        }else{
-            return ResponseEntity.ok("File received.");
-        }
     }
 
 

@@ -1,7 +1,11 @@
 package com.utimgapi.service;
 
+import com.utimgapi.mapper.ImgNameMapper;
 import com.utimgapi.mapper.MemberMapper;
+import com.utimgapi.mapper.Service_numbersMapper;
+import com.utimgapi.model.ImgName;
 import com.utimgapi.model.Member;
+import com.utimgapi.model.Service_numbers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -20,9 +24,23 @@ public class MemberService {
 
     MemberMapper memberMapper;
 
+    ImgNameMapper imgNameMapper;
+
+    Service_numbersMapper service_numbersMapper;
+
     @Autowired
-    public MemberService(MemberMapper memberMapper) {
+    public MemberService(MemberMapper memberMapper, ImgNameMapper imgNameMapper, Service_numbersMapper service_numbersMapper) {
+
         this.memberMapper = memberMapper;
+        this.imgNameMapper = imgNameMapper;
+        this.service_numbersMapper = service_numbersMapper;
+    }
+
+    public String getImgUNameByoriName(String ori_name){
+        ImgName in = imgNameMapper.getImg(ori_name);
+        System.out.println("in.toString()"+in.toString());
+
+        return null;
     }
 
     public List<Member> memberList() {
@@ -35,30 +53,34 @@ public class MemberService {
     // service 폴더가 존재하지 않을경우 새로운 폴더 생성 후 지정
     // 파일명을 중복되지 않은 이름으로 변경 후 저장, db에 변경된 이름과 원본이름을 저장함
     // 중복되지 않은 이름을 사용자에게 돌려줌 (이미지 read용 url)
-    public String getMemberByKey(String key, MultipartFile file, String service, String memberId) throws IOException {
+    
+    // 올라와서 할거 => url 추출해서 보내준 url로 이미지 뷰어 확인
+    public String getMemberByKey(String key, MultipartFile file, String m_service, String m_id) throws IOException {
         
         if (memberMapper.getMember(key) == null){
-            return null;
+            return "키가 존재하지 않음";
         }else{
             System.out.println("키가 존재함");
+
+            System.out.println("memberId:" + m_id + " service:" + m_service);
+            
+            // 키가 존재하는 경우 id와 service값으로 해당 서비스의 폴더번호 받음
+            int snumber = service_numbersMapper.getService_number(m_id, m_service).getService_number(); 
+
+            // 폴더번호로 경로 설정
             String baseDirectory = System.getProperty("user.dir") + "/images/";
-            String memberDirectory = baseDirectory + memberId + "/";
-            String serviceDirectory = memberDirectory + service + "/";
-            String filename = file.getOriginalFilename();
+            String memberDirectory = baseDirectory + snumber + "/";
+            String msg = "파일 저장실패";
 
             try {
-                // memberId 디렉터리 확인 및 생성
+                // 폴더번호에 해당하는 폴더가 없을 경우 새로운 폴더생성
                 if (!Files.exists(FileSystems.getDefault().getPath(memberDirectory))) {
                     Files.createDirectories(FileSystems.getDefault().getPath(memberDirectory));
                     System.out.println("Member directory created: " + memberDirectory);
                 }
 
-                // service 디렉터리 확인 및 생성
-                if (!Files.exists(FileSystems.getDefault().getPath(serviceDirectory))) {
-                    Files.createDirectories(FileSystems.getDefault().getPath(serviceDirectory));
-                    System.out.println("Service directory created: " + serviceDirectory);
-                }
-
+                // 파일저장시 중복방지를 위해 기존파일이름의 UUID값 + 확장자로 파일저장함
+                // db에는 UUID값, 원본파일명, 확장자 저장됨
                 String originalFilename = file.getOriginalFilename();
                 int lastDotIndex = originalFilename.lastIndexOf(".");
                 String extension = (lastDotIndex != -1) ? originalFilename.substring(lastDotIndex + 1) : "";
@@ -69,18 +91,22 @@ public class MemberService {
                 String uniqueFilename = UUID.randomUUID().toString() + "." + extension;
 
                 // 파일 저장
-                Path filePath = FileSystems.getDefault().getPath(serviceDirectory, uniqueFilename);
+                Path filePath = FileSystems.getDefault().getPath(memberDirectory, uniqueFilename);
                 file.transferTo(filePath);
 
                 System.out.println("uniqueFilename:" + uniqueFilename);
                 System.out.println("extension:" + extension);
                 System.out.println("originalFilenameWithoutExtension:"+ originalFilenameWithoutExtension);
 
+                int res = imgNameMapper.save_imgname(new ImgName(uniqueFilename, originalFilenameWithoutExtension, extension));
+                msg = originalFilenameWithoutExtension;
+
+                System.out.println("res:"+res);
+
             } catch (Exception e) {
                 e.printStackTrace();
-                // 예외 처리를 추가하세요.
             }
-            return "파일이 저장됨";
+            return msg;
         }
         
     }
