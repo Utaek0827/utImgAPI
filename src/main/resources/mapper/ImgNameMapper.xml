@@ -6,15 +6,21 @@
 
 <mapper namespace="com.utimgapi.mapper.ImgNameMapper">
 
+    <select id="getImgList" resultType="ImgName" parameterType="String">
+        SELECT * FROM img_name
+        WHERE m_id = #{m_id}
+
+    </select>
+
     <select id="getImg" resultType="ImgName" parameterType="String">
-        SELECT FROM img_name
+        SELECT * FROM img_name
         WHERE img_oriname = #{img_oriname}
 
     </select>
 
 
     <insert id="save_imgname"  parameterType="ImgName">
-        INSERT INTO img_name (img_channame, img_oriname, img_ext) VALUES (#{img_channame}, #{img_oriname}, #{img_ext})
+        INSERT INTO img_name (img_channame, img_oriname, img_ext, img_uptime) VALUES (#{img_channame}, #{img_oriname}, #{img_ext}, #{img_uptime})
     </insert>
 
 

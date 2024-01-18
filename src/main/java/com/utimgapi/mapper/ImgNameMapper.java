@@ -8,8 +8,10 @@ import java.util.List;
 @Mapper
 public interface ImgNameMapper {
 
-    int save_imgname(ImgName imgName);
+    public List<ImgName> getImgList(String m_id);
 
-    ImgName getImg(String ori_name);
+    public int save_imgname(ImgName imgName);
+
+    public ImgName getImg(String ori_name);
 
 }

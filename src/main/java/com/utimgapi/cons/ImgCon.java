@@ -33,9 +33,21 @@ public class ImgCon {
     // 이미지 한개 보여주기
     // 이미지 중복이름 불러오는 방법
 
+    @GetMapping("/api/imgList/{m_id}")
+    @ResponseBody
+    public ResponseEntity userImgList(@PathVariable("m_id") String m_id){
+        System.out.println("userImgList");
+        System.out.println(memberService.getImgListBym_id(m_id));
+
+        return ResponseEntity.ok()
+                .header("Content-Type", "application/json")
+                .body(memberService.getImgListBym_id(m_id));
+
+    }
+
     @GetMapping("/{serviceNumber}/{imageName}")
     @ResponseBody
-    public ResponseEntity wewtImg(@PathVariable String serviceNumber, @PathVariable String imageName) throws MalformedURLException {
+    public ResponseEntity viewImg(@PathVariable String serviceNumber, @PathVariable String imageName) throws MalformedURLException {
 
          memberService.getImgUNameByoriName(imageName);
 

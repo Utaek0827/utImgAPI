@@ -93,13 +93,16 @@ public class MemberService {
                 // 파일 저장
                 Path filePath = FileSystems.getDefault().getPath(memberDirectory, uniqueFilename);
                 file.transferTo(filePath);
+                String uptime = System.currentTimeMillis() + "";
 
+                System.out.println("uptime:"+uptime);
                 System.out.println("uniqueFilename:" + uniqueFilename);
                 System.out.println("extension:" + extension);
                 System.out.println("originalFilenameWithoutExtension:"+ originalFilenameWithoutExtension);
 
-                int res = imgNameMapper.save_imgname(new ImgName(uniqueFilename, originalFilenameWithoutExtension, extension));
-                msg = originalFilenameWithoutExtension;
+                int res = imgNameMapper.save_imgname(
+                        new ImgName(uniqueFilename, originalFilenameWithoutExtension, extension, uptime, m_id, m_service));
+                msg = originalFilenameWithoutExtension + "-uptime" + uptime;
 
                 System.out.println("res:"+res);
 
@@ -112,6 +115,8 @@ public class MemberService {
     }
 
 
+    public List<ImgName> getImgListBym_id(String mId) {
 
-
+        return imgNameMapper.getImgList(mId);
+    }
 }
