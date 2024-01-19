@@ -65,12 +65,13 @@ public class MemberService {
             System.out.println("memberId:" + m_id + " service:" + m_service);
             
             // 키가 존재하는 경우 id와 service값으로 해당 서비스의 폴더번호 받음
-            int snumber = service_numbersMapper.getService_number(m_id, m_service).getService_number(); 
+            int snumber = service_numbersMapper.getService_number(m_id, m_service).getService_number();
+            System.out.println("snumber:"+snumber);
 
             // 폴더번호로 경로 설정
             String baseDirectory = System.getProperty("user.dir") + "/images/";
             String memberDirectory = baseDirectory + snumber + "/";
-            String msg = "파일 저장실패";
+            String msg = "0";
 
             try {
                 // 폴더번호에 해당하는 폴더가 없을 경우 새로운 폴더생성
@@ -93,16 +94,23 @@ public class MemberService {
                 // 파일 저장
                 Path filePath = FileSystems.getDefault().getPath(memberDirectory, uniqueFilename);
                 file.transferTo(filePath);
-                String uptime = System.currentTimeMillis() + "";
+                String uptime = String.valueOf(System.currentTimeMillis());
+                String img_size = String.valueOf(file.getSize());
+                String servienum = String.valueOf(snumber);
 
                 System.out.println("uptime:"+uptime);
                 System.out.println("uniqueFilename:" + uniqueFilename);
                 System.out.println("extension:" + extension);
                 System.out.println("originalFilenameWithoutExtension:"+ originalFilenameWithoutExtension);
+                System.out.println("img_size:"+ img_size);
+
 
                 int res = imgNameMapper.save_imgname(
-                        new ImgName(uniqueFilename, originalFilenameWithoutExtension, extension, uptime, m_id, m_service));
+                        new ImgName(uniqueFilename, originalFilenameWithoutExtension, extension, uptime, img_size, m_id, servienum));
                 msg = originalFilenameWithoutExtension + "-uptime" + uptime;
+                if(res == 1){
+                    msg = "ok";
+                }
 
                 System.out.println("res:"+res);
 

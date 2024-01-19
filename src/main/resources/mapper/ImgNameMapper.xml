@@ -20,7 +20,7 @@
 
 
     <insert id="save_imgname"  parameterType="ImgName">
-        INSERT INTO img_name (img_channame, img_oriname, img_ext, img_uptime) VALUES (#{img_channame}, #{img_oriname}, #{img_ext}, #{img_uptime})
+        INSERT INTO img_name (img_channame, img_oriname, img_ext, img_uptime, img_size, m_id, m_service) VALUES (#{img_channame}, #{img_oriname}, #{img_ext}, #{img_uptime}, #{img_size}, #{m_id}, #{m_service})
     </insert>
 
 

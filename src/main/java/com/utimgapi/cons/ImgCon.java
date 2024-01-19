@@ -18,6 +18,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 @RestController
+@RequestMapping("/api")
 public class ImgCon {
 
     @Value("${ytimg.directory}")
@@ -33,7 +34,7 @@ public class ImgCon {
     // 이미지 한개 보여주기
     // 이미지 중복이름 불러오는 방법
 
-    @GetMapping("/api/imgList/{m_id}")
+    @GetMapping("/imgList/{m_id}")
     @ResponseBody
     public ResponseEntity userImgList(@PathVariable("m_id") String m_id){
         System.out.println("userImgList");
@@ -49,7 +50,7 @@ public class ImgCon {
     @ResponseBody
     public ResponseEntity viewImg(@PathVariable String serviceNumber, @PathVariable String imageName) throws MalformedURLException {
 
-         memberService.getImgUNameByoriName(imageName);
+        //memberService.getImgUNameByoriName(imageName);
 
         Path imagePath = Paths.get(imageUploadDirectory +"/" +serviceNumber +"/" + imageName);
         System.out.println(imageUploadDirectory +"/" +serviceNumber +"/" + imageName);
@@ -73,8 +74,10 @@ public class ImgCon {
     public ResponseEntity<String> receiveFile( //이미지 저장용 컨트롤러
             @RequestPart("file") MultipartFile file,
             @RequestPart("service") String service,
-            @RequestPart("memberId") String memberId,
-            @RequestPart("key") String imgkey) throws IOException {
+            @RequestHeader("Memberid") String memberId,
+            @RequestHeader("Key") String imgkey) throws IOException {
+
+        System.out.println("업로드 실행");
 
         String msg = memberService.getMemberByKey(imgkey, file, service, memberId);
         return ResponseEntity.ok(msg);
