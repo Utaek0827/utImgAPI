@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org/DTD Mapper3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+
+<mapper namespace="com.utimgapi.mapper.ImgNameMapper">
+
+    <select id="getImgList" resultType="ImgName" parameterType="String">
+        SELECT * FROM img_name
+        WHERE m_id = #{m_id}
+
+    </select>
+
+    <select id="getImg" resultType="ImgName" parameterType="String">
+        SELECT * FROM img_name
+        WHERE img_oriname = #{img_oriname}
+
+    </select>
+
+
+    <insert id="save_imgname"  parameterType="ImgName">
+        INSERT INTO img_name (img_channame, img_oriname, img_ext, img_uptime, img_size, m_id, m_service) VALUES (#{img_channame}, #{img_oriname}, #{img_ext}, #{img_uptime}, #{img_size}, #{m_id}, #{m_service})
+    </insert>
+
+    <delete id="delImg" parameterType="String">
+        DELETE FROM img_name
+        WHERE img_channame = #{imgChanname}
+    </delete>
+
+
+
+
+
+</mapper>
