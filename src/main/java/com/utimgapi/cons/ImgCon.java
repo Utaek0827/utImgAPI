@@ -43,7 +43,6 @@ public class ImgCon {
         return ResponseEntity.ok()
                 .header("Content-Type", "application/json")
                 .body(memberService.getImgListBym_id(m_id));
-
     }
 
     @GetMapping("/{serviceNumber}/{imageName}")
@@ -51,7 +50,6 @@ public class ImgCon {
     public ResponseEntity viewImg(@PathVariable String serviceNumber, @PathVariable String imageName) throws MalformedURLException {
 
         //memberService.getImgUNameByoriName(imageName);
-
         Path imagePath = Paths.get(imageUploadDirectory +"/" +serviceNumber +"/" + imageName);
         System.out.println(imageUploadDirectory +"/" +serviceNumber +"/" + imageName);
         System.out.println(memberService.toString());
@@ -82,6 +80,21 @@ public class ImgCon {
         String msg = memberService.getMemberByKey(imgkey, file, service, memberId);
         return ResponseEntity.ok(msg);
 
+    }
+
+    @DeleteMapping("/{img_channame}")
+    public ResponseEntity<String> delImg(
+            @PathVariable ("img_channame") String img_channame
+            ){
+
+        String msg = "삭제 실패";
+
+        System.out.println("삭제:"+img_channame);
+        if(memberService.delImg(img_channame) == 1){
+            msg = "삭제 완료";
+        }
+
+        return ResponseEntity.ok(msg);
     }
 
 

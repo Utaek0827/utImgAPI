@@ -23,6 +23,11 @@
         INSERT INTO img_name (img_channame, img_oriname, img_ext, img_uptime, img_size, m_id, m_service) VALUES (#{img_channame}, #{img_oriname}, #{img_ext}, #{img_uptime}, #{img_size}, #{m_id}, #{m_service})
     </insert>
 
+    <delete id="delImg" parameterType="String">
+        DELETE FROM img_name
+        WHERE img_channame = #{imgChanname}
+    </delete>
+
 
 
 

@@ -122,9 +122,13 @@ public class MemberService {
         
     }
 
-
     public List<ImgName> getImgListBym_id(String mId) {
 
         return imgNameMapper.getImgList(mId);
+    }
+
+    public int delImg(String imgChanname) {
+
+        return imgNameMapper.delImg(imgChanname);
     }
 }

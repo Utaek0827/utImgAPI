@@ -14,4 +14,6 @@ public interface ImgNameMapper {
 
     public ImgName getImg(String ori_name);
 
+    public int delImg(String img_channame);
+
 }
